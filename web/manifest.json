@@ -1,6 +1,6 @@
 {
-    "name": "sonic_live_blogger",
-    "short_name": "sonic_live_blogger",
+    "name": "Match Blogger",
+    "short_name": "Match Blogger",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
