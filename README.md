@@ -1,6 +1,6 @@
-# sonic_live_blogger
+# live-match-blogger
 
-A new Flutter project.
+A Flutter project for live match blogging.
 
 ## Getting Started
 
