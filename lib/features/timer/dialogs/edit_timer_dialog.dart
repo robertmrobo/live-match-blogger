@@ -110,7 +110,7 @@ class EditTimerDialog {
             onPressed: () => Navigator.pop(context),
             child: const Text('Cancel'),
           ),
-          ElevatedButton(
+          OutlinedButton(
             onPressed: () {
               final minutes = int.tryParse(minutesController.text) ?? 0;
               final seconds = int.tryParse(secondsController.text) ?? 0;
@@ -195,13 +195,13 @@ class EditTimerDialog {
       VoidCallback onPressed,
       ) {
     return SizedBox(
-      height: 32,
+      height: 36,
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.primary.withOpacity(0.1),
-          foregroundColor: AppColors.primary,
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+          foregroundColor: AppColors.neutral700,
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),

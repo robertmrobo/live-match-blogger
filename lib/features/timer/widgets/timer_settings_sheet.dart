@@ -9,7 +9,6 @@ import '../providers/target_time_notifier.dart';
 import '../models/timer_data.dart';
 import '../dialogs/edit_timer_dialog.dart';
 import '../dialogs/stop_confirmation_dialog.dart';
-import '../utils/app_color_scheme.dart';
 
 enum SettingsTab { adjustments, actions }
 
@@ -41,6 +40,7 @@ class _TimerSettingsSheetState extends ConsumerState<TimerSettingsSheet>
   @override
   Widget build(BuildContext context) {
     final timerData = ref.watch(timerProvider);
+    final targetTime = ref.watch(targetTimeProvider);
     final timerNotifier = ref.read(timerProvider.notifier);
     final targetTimeNotifier = ref.read(targetTimeProvider.notifier);
 
@@ -93,6 +93,10 @@ class _TimerSettingsSheetState extends ConsumerState<TimerSettingsSheet>
               ),
             ),
 
+            // Current Values Display
+            if (_selectedTab == SettingsTab.adjustments)
+              _buildCurrentValuesDisplay(timerData.duration, targetTime),
+
             // iOS-style segmented control
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 20),
@@ -129,6 +133,81 @@ class _TimerSettingsSheetState extends ConsumerState<TimerSettingsSheet>
             SizedBox(height: MediaQuery.of(context).padding.bottom),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildCurrentValuesDisplay(Duration currentTimer, Duration targetTime) {
+    return Container(
+      margin: const EdgeInsets.fromLTRB(20, 0, 20, 16),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.grey.shade50,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: Colors.grey.shade200,
+          width: 1,
+        ),
+      ),
+      child: Row(
+        children: [
+          // Timer Display
+          Expanded(
+            child: Column(
+              children: [
+                Text(
+                  'Current Timer',
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.grey.shade600,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  currentTimer.toMMSS(),
+                  style: const TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.black,
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          // Divider
+          Container(
+            width: 1,
+            height: 40,
+            color: Colors.grey.shade300,
+          ),
+
+          // Target Time Display
+          Expanded(
+            child: Column(
+              children: [
+                Text(
+                  'Target Time',
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.grey.shade600,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  targetTime.toMMSS(),
+                  style: const TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.black,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -259,9 +338,9 @@ class _TimerSettingsSheetState extends ConsumerState<TimerSettingsSheet>
   }
 
   Widget _buildAdjustmentTile(_AdjustmentButton button) {
-    return GestureDetector(
-      onTap: button.onTap,
-      child: Container(
+    return Material(
+      color: Colors.transparent,
+      child: Ink(
         decoration: BoxDecoration(
           color: button.color.withOpacity(0.1),
           borderRadius: BorderRadius.circular(12),
@@ -270,13 +349,23 @@ class _TimerSettingsSheetState extends ConsumerState<TimerSettingsSheet>
             width: 1,
           ),
         ),
-        child: Center(
-          child: Text(
-            button.label,
-            style: TextStyle(
-              color: button.color,
-              fontWeight: FontWeight.w600,
-              fontSize: 16,
+        child: InkWell(
+          onTap: button.onTap,
+          borderRadius: BorderRadius.circular(12),
+          splashColor: button.color.withOpacity(0.2),
+          highlightColor: button.color.withOpacity(0.1),
+          child: Container(
+            height: double.infinity,
+            width: double.infinity,
+            child: Center(
+              child: Text(
+                button.label,
+                style: TextStyle(
+                  color: button.color,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 16,
+                ),
+              ),
             ),
           ),
         ),
