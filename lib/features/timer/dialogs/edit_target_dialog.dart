@@ -150,7 +150,6 @@ class EditTargetDialog {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // iOS-style label above the input
         Padding(
           padding: const EdgeInsets.only(left: 4, bottom: 8),
           child: Text(
@@ -162,7 +161,6 @@ class EditTargetDialog {
             ),
           ),
         ),
-        // Input field without label
         Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),

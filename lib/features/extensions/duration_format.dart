@@ -1,4 +1,3 @@
-// Helper extension to format duration as MM:SS
 extension DurationFormat on Duration {
   String toMMSS() {
     final minutes = inMinutes.remainder(60).toString().padLeft(2, '0');
