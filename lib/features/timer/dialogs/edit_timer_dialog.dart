@@ -5,6 +5,9 @@ import '../utils/app_color_scheme.dart';
 
 class EditTimerDialog {
   static void show(BuildContext context, TimerNotifier timerNotifier, Duration currentDuration) {
+    final theme = Theme.of(context);
+    final isDarkMode = theme.brightness == Brightness.dark;
+
     final minutesController = TextEditingController(
       text: currentDuration.inMinutes.remainder(60).toString(),
     );
@@ -15,22 +18,35 @@ class EditTimerDialog {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
+        backgroundColor: AppColors.getCardBackground(isDarkMode),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
+          side: BorderSide(
+            color: AppColors.getCardBorder(isDarkMode),
+            width: 1,
+          ),
         ),
         title: Row(
           children: [
-            Icon(
-              Icons.edit,
-              color: AppColors.primary,
-              size: 24,
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: AppColors.primary.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Icon(
+                Icons.edit_outlined,
+                color: AppColors.primary,
+                size: 24,
+              ),
             ),
-            const SizedBox(width: 8),
-            const Text(
+            const SizedBox(width: 12),
+            Text(
               'Edit Timer',
-              style: TextStyle(
+              style: theme.textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.w600,
                 fontSize: 20,
+                color: AppColors.getTextPrimary(isDarkMode),
               ),
             ),
           ],
@@ -40,9 +56,9 @@ class EditTimerDialog {
           children: [
             Text(
               'Adjust the current timer duration:',
-              style: TextStyle(
+              style: theme.textTheme.bodyMedium?.copyWith(
                 fontSize: 16,
-                color: AppColors.neutral500,
+                color: AppColors.getTextSecondary(isDarkMode),
               ),
             ),
             const SizedBox(height: 24),
@@ -50,19 +66,23 @@ class EditTimerDialog {
               children: [
                 Expanded(
                   child: _buildTimeInput(
+                    context: context,
                     controller: minutesController,
                     label: 'Minutes',
-                    icon: Icons.access_time,
+                    icon: Icons.access_time_outlined,
                     maxValue: 59,
+                    isDarkMode: isDarkMode,
                   ),
                 ),
                 const SizedBox(width: 16),
                 Expanded(
                   child: _buildTimeInput(
+                    context: context,
                     controller: secondsController,
                     label: 'Seconds',
-                    icon: Icons.timer,
+                    icon: Icons.timer_outlined,
                     maxValue: 59,
+                    isDarkMode: isDarkMode,
                   ),
                 ),
               ],
@@ -70,10 +90,10 @@ class EditTimerDialog {
             const SizedBox(height: 24),
             Text(
               'Quick adjustments:',
-              style: TextStyle(
+              style: theme.textTheme.bodyMedium?.copyWith(
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
-                color: AppColors.neutral500,
+                color: AppColors.getTextSecondary(isDarkMode),
               ),
             ),
             const SizedBox(height: 12),
@@ -85,21 +105,26 @@ class EditTimerDialog {
                   context,
                   '+1 min',
                       () => _addMinutes(minutesController, 1),
+                  isDarkMode,
                 ),
                 _buildQuickButton(
                   context,
                   '+5 min',
                       () => _addMinutes(minutesController, 5),
+                  isDarkMode,
                 ),
                 _buildQuickButton(
                   context,
                   '+10 min',
                       () => _addMinutes(minutesController, 10),
+                  isDarkMode,
                 ),
                 _buildQuickButton(
                   context,
                   'Reset',
                       () => _resetFields(minutesController, secondsController),
+                  isDarkMode,
+                  isReset: true,
                 ),
               ],
             ),
@@ -108,9 +133,13 @@ class EditTimerDialog {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
+            style: TextButton.styleFrom(
+              foregroundColor: AppColors.getTextSecondary(isDarkMode),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            ),
             child: const Text('Cancel'),
           ),
-          OutlinedButton(
+          ElevatedButton(
             onPressed: () {
               final minutes = int.tryParse(minutesController.text) ?? 0;
               final seconds = int.tryParse(secondsController.text) ?? 0;
@@ -118,6 +147,14 @@ class EditTimerDialog {
               timerNotifier.updateDuration(newDuration);
               Navigator.pop(context);
             },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.primary,
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
             child: const Text('Update Timer'),
           ),
         ],
@@ -126,11 +163,15 @@ class EditTimerDialog {
   }
 
   static Widget _buildTimeInput({
+    required BuildContext context,
     required TextEditingController controller,
     required String label,
     required IconData icon,
     required int maxValue,
+    required bool isDarkMode,
   }) {
+    final theme = Theme.of(context);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -138,40 +179,57 @@ class EditTimerDialog {
           padding: const EdgeInsets.only(left: 4, bottom: 8),
           child: Text(
             label,
-            style: TextStyle(
+            style: theme.textTheme.labelMedium?.copyWith(
               fontSize: 14,
               fontWeight: FontWeight.w600,
-              color: AppColors.neutral600,
+              color: AppColors.getTextSecondary(isDarkMode),
             ),
           ),
         ),
         Container(
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: AppColors.neutral300),
-            color: AppColors.neutral50,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: AppColors.getCardBorder(isDarkMode),
+              width: 1.5,
+            ),
+            color: AppColors.getSurface(isDarkMode),
+            boxShadow: [
+              BoxShadow(
+                color: isDarkMode ? AppColors.darkShadow : AppColors.softShadow,
+                blurRadius: 4,
+                offset: const Offset(0, 2),
+              ),
+            ],
           ),
           child: TextField(
             controller: controller,
             keyboardType: TextInputType.number,
             textAlign: TextAlign.center,
-            style: const TextStyle(
+            style: theme.textTheme.bodyLarge?.copyWith(
               fontSize: 18,
               fontWeight: FontWeight.w600,
+              color: AppColors.getTextPrimary(isDarkMode),
+              fontFamily: 'monospace',
             ),
             inputFormatters: [
               FilteringTextInputFormatter.digitsOnly,
               LengthLimitingTextInputFormatter(2),
             ],
             decoration: InputDecoration(
-              prefixIcon: Icon(icon, color: AppColors.primary),
+              prefixIcon: Icon(
+                icon,
+                color: AppColors.primary,
+                size: 20,
+              ),
               border: InputBorder.none,
               contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
               hintText: '0',
-              hintStyle: TextStyle(
-                color: AppColors.neutral400,
+              hintStyle: theme.textTheme.bodyLarge?.copyWith(
+                color: AppColors.getTextMuted(isDarkMode),
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
+                fontFamily: 'monospace',
               ),
             ),
             onChanged: (value) {
@@ -193,23 +251,37 @@ class EditTimerDialog {
       BuildContext context,
       String text,
       VoidCallback onPressed,
-      ) {
+      bool isDarkMode, {
+        bool isReset = false,
+      }) {
+    final theme = Theme.of(context);
+
     return SizedBox(
       height: 36,
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.primary.withOpacity(0.1),
-          foregroundColor: AppColors.neutral700,
+          backgroundColor: isReset
+              ? AppColors.warning.withOpacity(0.1)
+              : AppColors.primary.withOpacity(0.1),
+          foregroundColor: isReset
+              ? AppColors.warning
+              : AppColors.primary,
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(18),
+            side: BorderSide(
+              color: isReset
+                  ? AppColors.warning.withOpacity(0.3)
+                  : AppColors.primary.withOpacity(0.3),
+              width: 1,
+            ),
           ),
           elevation: 0,
         ),
         child: Text(
           text,
-          style: const TextStyle(
+          style: theme.textTheme.labelMedium?.copyWith(
             fontSize: 12,
             fontWeight: FontWeight.w600,
           ),

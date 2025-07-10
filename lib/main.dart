@@ -16,6 +16,8 @@ class MyApp extends StatelessWidget {
       title: 'Timer App',
       debugShowCheckedModeBanner: false,
       theme: defaultTheme(),
+      darkTheme: darkTheme(),
+      themeMode: ThemeMode.system,
       home: const TimerPage(),
     );
   }

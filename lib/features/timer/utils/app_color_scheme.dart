@@ -27,11 +27,23 @@ class AppColors {
   static const Color success = Color(0xFF16A34A);        // Forest green
   static const Color warning = Color(0xFFEA580C);        // Warm orange
   static const Color danger = Color(0xFFDC2626);         // Red that complements maroon
+  static const Color info = Color(0xFF0EA5E9);           // Sky blue for informational content
 
   // Accent colors for variety
   static const Color accent1 = Color(0xFF92400E);        // Amber-brown
   static const Color accent2 = Color(0xFF7C2D12);        // Rust
   static const Color accent3 = Color(0xFF991B1B);        // Deep red
+
+  // NEW: Dark mode specific colors
+  static const Color darkBackground = Color(0xFF000000);    // Pure black
+  static const Color darkSurface = Color(0xFF1C1C1E);      // iOS dark surface
+  static const Color darkCard = Color(0xFF2C2C2E);         // iOS dark card
+  static const Color darkBorder = Color(0xFF3A3A3C);       // iOS dark border
+
+  // NEW: Dark mode text colors
+  static const Color darkTextPrimary = Color(0xFFFFFFFF);    // White
+  static const Color darkTextSecondary = Color(0xFFEBEBF5);  // Light gray
+  static const Color darkTextTertiary = Color(0xFF8E8E93);   // Medium gray
 
   // Timer-specific colors
   static Color getTimerStateColor(String state) {
@@ -68,12 +80,13 @@ class AppColors {
     return getProgressColor(progress);
   }
 
-  // Additional helper methods for maroon-specific styling
-  static Color getCardBackground() => neutral50;
-  static Color getCardBorder() => neutral200;
-  static Color getTextPrimary() => neutral900;
-  static Color getTextSecondary() => neutral600;
-  static Color getTextMuted() => neutral500;
+  // Theme-aware helper methods
+  static Color getCardBackground(bool isDark) => isDark ? darkCard : neutral50;
+  static Color getCardBorder(bool isDark) => isDark ? darkBorder : neutral200;
+  static Color getTextPrimary(bool isDark) => isDark ? darkTextPrimary : neutral900;
+  static Color getTextSecondary(bool isDark) => isDark ? darkTextSecondary : neutral600;
+  static Color getTextMuted(bool isDark) => isDark ? darkTextTertiary : neutral500;
+  static Color getSurface(bool isDark) => isDark ? darkSurface : Colors.white;
 
   // Gradient helpers for rich maroon effects
   static LinearGradient get primaryGradient => LinearGradient(
@@ -88,7 +101,15 @@ class AppColors {
     colors: [neutral50, neutral100.withOpacity(0.8)],
   );
 
+  // NEW: Dark mode gradients
+  static LinearGradient get darkCardGradient => LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [darkCard, darkSurface.withOpacity(0.8)],
+  );
+
   // Shadow colors that work well with maroon
   static Color get primaryShadow => primary.withOpacity(0.3);
   static Color get softShadow => neutral400.withOpacity(0.2);
+  static Color get darkShadow => Colors.black.withOpacity(0.4);
 }
