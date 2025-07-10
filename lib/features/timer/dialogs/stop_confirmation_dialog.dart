@@ -31,7 +31,7 @@ class StopConfirmationDialog {
                   const Icon(Icons.timer, color: Colors.orange),
                   const SizedBox(width: 8),
                   Text(
-                    'Current time: ${timerData.duration.toMMSS()}',
+                    'Current time: ${timerData.duration.toHHMMSS()}',
                     style: const TextStyle(fontWeight: FontWeight.w500),
                   ),
                 ],

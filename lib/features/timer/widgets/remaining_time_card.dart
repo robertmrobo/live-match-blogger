@@ -60,7 +60,7 @@ class RemainingTimeCard extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             Text(
-              remaining.toMMSS(),
+              remaining.toHHMMSS(),
               style: TextStyle(
                 fontSize: 36,
                 fontWeight: FontWeight.bold,
