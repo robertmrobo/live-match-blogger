@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart'; // Add this import
+import 'package:flutter/foundation.dart';
 
 import '../providers/target_time_notifier.dart';
 import '../providers/timer_notifier.dart';
@@ -29,11 +29,9 @@ class _TimerPageState extends ConsumerState<TimerPage> {
     );
   }
 
-  bool get _isMobile {
-    // Check if running on mobile platforms
-    if (kIsWeb) return false;
-    return Theme.of(context).platform == TargetPlatform.android ||
-        Theme.of(context).platform == TargetPlatform.iOS;
+  bool get _shouldShowContainer {
+    // Show container when screen width is larger than typical mobile width
+    return MediaQuery.of(context).size.width > 600; // Adjust this breakpoint as needed
   }
 
   @override
@@ -44,7 +42,7 @@ class _TimerPageState extends ConsumerState<TimerPage> {
     final targetTimeNotifier = ref.read(targetTimeProvider.notifier);
 
     Widget content = Scaffold(
-      backgroundColor: _isMobile ? null : Colors.transparent, // Make scaffold transparent on web
+      backgroundColor: _shouldShowContainer ? Colors.transparent : null,
       appBar: AppBar(
         title: const Text(
           'Timer',
@@ -112,8 +110,8 @@ class _TimerPageState extends ConsumerState<TimerPage> {
       ),
     );
 
-    // If not on mobile, wrap with rounded container and add outer scaffold
-    if (!_isMobile) {
+    // If screen is wide enough, wrap with rounded container
+    if (_shouldShowContainer) {
       content = Scaffold(
         body: Center(
           child: Container(
