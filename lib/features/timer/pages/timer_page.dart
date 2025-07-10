@@ -44,6 +44,7 @@ class _TimerPageState extends ConsumerState<TimerPage> {
     final targetTimeNotifier = ref.read(targetTimeProvider.notifier);
 
     Widget content = Scaffold(
+      backgroundColor: _isMobile ? null : Colors.transparent, // Make scaffold transparent on web
       appBar: AppBar(
         title: const Text(
           'Timer',
@@ -111,30 +112,32 @@ class _TimerPageState extends ConsumerState<TimerPage> {
       ),
     );
 
-    // If not on mobile, wrap with rounded container
+    // If not on mobile, wrap with rounded container and add outer scaffold
     if (!_isMobile) {
-      content = Center(
-        child: Container(
-          constraints: const BoxConstraints(maxWidth: 500),
-          margin: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            color: Theme.of(context).scaffoldBackgroundColor,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(
-              color: Colors.grey.withOpacity(0.2),
-              width: 1,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.1),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
+      content = Scaffold(
+        body: Center(
+          child: Container(
+            constraints: const BoxConstraints(maxWidth: 500),
+            margin: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: Theme.of(context).scaffoldBackgroundColor,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                color: Colors.grey.withOpacity(0.2),
+                width: 1,
               ),
-            ],
-          ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(16),
-            child: content,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(16),
+              child: content,
+            ),
           ),
         ),
       );
