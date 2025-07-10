@@ -12,5 +12,4 @@ extension DurationFormat on Duration {
     final hoursStr = hours.toString().padLeft(2, '0');
     return '$hoursStr:$minutes:$seconds';
   }
-
 }

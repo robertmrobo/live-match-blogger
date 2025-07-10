@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
@@ -9,6 +10,7 @@ import '../providers/target_time_notifier.dart';
 import '../models/timer_data.dart';
 import '../dialogs/edit_timer_dialog.dart';
 import '../dialogs/stop_confirmation_dialog.dart';
+import '../utils/app_color_scheme.dart';
 
 enum SettingsTab { adjustments, actions }
 
@@ -39,6 +41,9 @@ class _TimerSettingsSheetState extends ConsumerState<TimerSettingsSheet>
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDarkMode = theme.brightness == Brightness.dark;
+
     final timerData = ref.watch(timerProvider);
     final targetTime = ref.watch(targetTimeProvider);
     final timerNotifier = ref.read(timerProvider.notifier);
@@ -46,21 +51,32 @@ class _TimerSettingsSheetState extends ConsumerState<TimerSettingsSheet>
 
     return SafeArea(
       child: Container(
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        decoration: BoxDecoration(
+          color: AppColors.getCardBackground(isDarkMode),
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+          border: Border.all(
+            color: AppColors.getCardBorder(isDarkMode),
+            width: 1,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: isDarkMode ? AppColors.darkShadow : AppColors.softShadow,
+              blurRadius: 20,
+              offset: const Offset(0, -5),
+            ),
+          ],
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const SizedBox(height: 32),
+            const SizedBox(height: 24),
             // iOS-style handle
             Container(
               width: 40,
               height: 4,
               margin: const EdgeInsets.only(top: 12),
               decoration: BoxDecoration(
-                color: Colors.grey.shade300,
+                color: AppColors.getTextMuted(isDarkMode),
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -71,21 +87,29 @@ class _TimerSettingsSheetState extends ConsumerState<TimerSettingsSheet>
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
+                  Text(
                     'Timer Settings',
-                    style: TextStyle(
+                    style: theme.textTheme.titleLarge?.copyWith(
                       fontSize: 20,
                       fontWeight: FontWeight.w600,
+                      color: AppColors.getTextPrimary(isDarkMode),
                     ),
                   ),
                   GestureDetector(
                     onTap: () => Navigator.pop(context),
-                    child: Text(
-                      'Done',
-                      style: TextStyle(
-                        color: Colors.blue,
-                        fontSize: 17,
-                        fontWeight: FontWeight.w600,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      decoration: BoxDecoration(
+                        color: AppColors.primary.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text(
+                        'Done',
+                        style: theme.textTheme.labelLarge?.copyWith(
+                          color: AppColors.danger,
+                          fontSize: 17,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
                   ),
@@ -93,22 +117,38 @@ class _TimerSettingsSheetState extends ConsumerState<TimerSettingsSheet>
               ),
             ),
 
-            // Current Values Display
-            if (_selectedTab == SettingsTab.adjustments)
-              _buildCurrentValuesDisplay(timerData.duration, targetTime),
+            _buildCurrentValuesDisplay(timerData.duration, targetTime, isDarkMode),
 
             // iOS-style segmented control
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 20),
               child: CupertinoSegmentedControl<SettingsTab>(
-                children: const {
+                selectedColor: AppColors.primary,
+                unselectedColor: AppColors.getSurface(isDarkMode),
+                borderColor: AppColors.getCardBorder(isDarkMode),
+                pressedColor: AppColors.primary.withOpacity(0.2),
+                children: {
                   SettingsTab.adjustments: Padding(
-                    padding: EdgeInsets.symmetric(vertical: 8, horizontal: 4),
-                    child: Text('Quick Adjust'),
+                    padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                    child: Text(
+                      'Quick Adjust',
+                      style: TextStyle(
+                        color: _selectedTab == SettingsTab.adjustments
+                            ? Colors.white
+                            : AppColors.getTextPrimary(isDarkMode),
+                      ),
+                    ),
                   ),
                   SettingsTab.actions: Padding(
-                    padding: EdgeInsets.symmetric(vertical: 8, horizontal: 4),
-                    child: Text('Actions'),
+                    padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                    child: Text(
+                      'Actions',
+                      style: TextStyle(
+                        color: _selectedTab == SettingsTab.actions
+                            ? Colors.white
+                            : AppColors.getTextPrimary(isDarkMode),
+                      ),
+                    ),
                   ),
                 },
                 groupValue: _selectedTab,
@@ -124,8 +164,8 @@ class _TimerSettingsSheetState extends ConsumerState<TimerSettingsSheet>
                 width: double.infinity,
                 padding: const EdgeInsets.all(20),
                 child: _selectedTab == SettingsTab.adjustments
-                    ? _buildAdjustmentsTab(timerNotifier, targetTimeNotifier)
-                    : _buildActionsTab(timerData, timerNotifier),
+                    ? _buildAdjustmentsTab(timerNotifier, targetTimeNotifier, isDarkMode)
+                    : _buildActionsTab(timerData, timerNotifier, isDarkMode),
               ),
             ),
 
@@ -137,17 +177,24 @@ class _TimerSettingsSheetState extends ConsumerState<TimerSettingsSheet>
     );
   }
 
-  Widget _buildCurrentValuesDisplay(Duration currentTimer, Duration targetTime) {
+  Widget _buildCurrentValuesDisplay(Duration currentTimer, Duration targetTime, bool isDarkMode) {
     return Container(
       margin: const EdgeInsets.fromLTRB(20, 0, 20, 16),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.grey.shade50,
+        color: AppColors.getSurface(isDarkMode),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: Colors.grey.shade200,
+          color: AppColors.getCardBorder(isDarkMode),
           width: 1,
         ),
+        boxShadow: [
+          BoxShadow(
+            color: isDarkMode ? AppColors.darkShadow : AppColors.softShadow,
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Row(
         children: [
@@ -160,16 +207,17 @@ class _TimerSettingsSheetState extends ConsumerState<TimerSettingsSheet>
                   style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w500,
-                    color: Colors.grey.shade600,
+                    color: AppColors.getTextSecondary(isDarkMode),
                   ),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   currentTimer.toHHMMSS(),
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.w700,
-                    color: Colors.black,
+                    color: AppColors.getTextPrimary(isDarkMode),
+                    fontFamily: 'monospace',
                   ),
                 ),
               ],
@@ -180,7 +228,7 @@ class _TimerSettingsSheetState extends ConsumerState<TimerSettingsSheet>
           Container(
             width: 1,
             height: 40,
-            color: Colors.grey.shade300,
+            color: AppColors.getCardBorder(isDarkMode),
           ),
 
           // Target Time Display
@@ -192,16 +240,17 @@ class _TimerSettingsSheetState extends ConsumerState<TimerSettingsSheet>
                   style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w500,
-                    color: Colors.grey.shade600,
+                    color: AppColors.getTextSecondary(isDarkMode),
                   ),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   targetTime.toHHMMSS(),
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.w700,
-                    color: Colors.black,
+                    color: AppColors.getTextPrimary(isDarkMode),
+                    fontFamily: 'monospace',
                   ),
                 ),
               ],
@@ -212,67 +261,67 @@ class _TimerSettingsSheetState extends ConsumerState<TimerSettingsSheet>
     );
   }
 
-  Widget _buildAdjustmentsTab(TimerNotifier timerNotifier, dynamic targetTimeNotifier) {
+  Widget _buildAdjustmentsTab(TimerNotifier timerNotifier, dynamic targetTimeNotifier, bool isDarkMode) {
     return Column(
       children: [
         // Timer Adjustments Section
-        _buildSectionHeader('Timer Adjustments'),
+        _buildSectionHeader('Timer Adjustments', isDarkMode),
         const SizedBox(height: 12),
         _buildAdjustmentGrid([
           _AdjustmentButton(
             label: '-5 min',
             onTap: () => timerNotifier.subtractTime(const Duration(minutes: 5)),
-            color: Colors.red.shade400,
+            color: AppColors.danger,
           ),
           _AdjustmentButton(
             label: '-1 min',
             onTap: () => timerNotifier.subtractTime(const Duration(minutes: 1)),
-            color: Colors.red.shade300,
+            color: AppColors.warning,
           ),
           _AdjustmentButton(
             label: '+1 min',
             onTap: () => timerNotifier.addTime(const Duration(minutes: 1)),
-            color: Colors.green.shade400,
+            color: AppColors.success,
           ),
           _AdjustmentButton(
             label: '+5 min',
             onTap: () => timerNotifier.addTime(const Duration(minutes: 5)),
-            color: Colors.green.shade500,
+            color: AppColors.danger,
           ),
-        ]),
+        ], isDarkMode),
 
         const SizedBox(height: 24),
 
         // Target Time Adjustments Section
-        _buildSectionHeader('Target Time Adjustments'),
+        _buildSectionHeader('Target Time Adjustments', isDarkMode),
         const SizedBox(height: 12),
         _buildAdjustmentGrid([
           _AdjustmentButton(
             label: '-30 min',
             onTap: () => targetTimeNotifier.subtractTime(const Duration(minutes: 30)),
-            color: Colors.orange.shade400,
+            color: AppColors.warning,
           ),
           _AdjustmentButton(
             label: '-15 min',
             onTap: () => targetTimeNotifier.subtractTime(const Duration(minutes: 15)),
-            color: Colors.orange.shade300,
+            color: AppColors.info,
           ),
           _AdjustmentButton(
             label: '+15 min',
             onTap: () => targetTimeNotifier.addTime(const Duration(minutes: 15)),
-            color: Colors.blue.shade400,
+            color: AppColors.success,
           ),
           _AdjustmentButton(
             label: '+30 min',
             onTap: () => targetTimeNotifier.addTime(const Duration(minutes: 30)),
-            color: Colors.blue.shade500,
+            color: AppColors.danger,
           ),
-        ]),
+        ], isDarkMode),
       ],
     );
   }
 
-  Widget _buildActionsTab(TimerData timerData, TimerNotifier timerNotifier) {
+  Widget _buildActionsTab(TimerData timerData, TimerNotifier timerNotifier, bool isDarkMode) {
     return Column(
       children: [
         // iOS-style action buttons
@@ -284,6 +333,7 @@ class _TimerSettingsSheetState extends ConsumerState<TimerSettingsSheet>
             Navigator.pop(context);
             EditTimerDialog.show(context, timerNotifier, timerData.duration);
           },
+          isDarkMode: isDarkMode,
         ),
 
         const SizedBox(height: 12),
@@ -293,6 +343,7 @@ class _TimerSettingsSheetState extends ConsumerState<TimerSettingsSheet>
           title: 'Copy Timer',
           subtitle: 'Copy current time to clipboard',
           onTap: () => _copyToClipboard(timerData.duration),
+          isDarkMode: isDarkMode,
         ),
 
         const SizedBox(height: 12),
@@ -305,13 +356,14 @@ class _TimerSettingsSheetState extends ConsumerState<TimerSettingsSheet>
             Navigator.pop(context);
             StopConfirmationDialog.show(context, timerNotifier, timerData);
           },
+          isDarkMode: isDarkMode,
           isDestructive: true,
         ),
       ],
     );
   }
 
-  Widget _buildSectionHeader(String title) {
+  Widget _buildSectionHeader(String title, bool isDarkMode) {
     return Align(
       alignment: Alignment.centerLeft,
       child: Text(
@@ -319,13 +371,13 @@ class _TimerSettingsSheetState extends ConsumerState<TimerSettingsSheet>
         style: TextStyle(
           fontSize: 16,
           fontWeight: FontWeight.w600,
-          color: Colors.grey.shade700,
+          color: AppColors.getTextSecondary(isDarkMode),
         ),
       ),
     );
   }
 
-  Widget _buildAdjustmentGrid(List<_AdjustmentButton> buttons) {
+  Widget _buildAdjustmentGrid(List<_AdjustmentButton> buttons, bool isDarkMode) {
     return GridView.count(
       crossAxisCount: 2,
       shrinkWrap: true,
@@ -333,11 +385,11 @@ class _TimerSettingsSheetState extends ConsumerState<TimerSettingsSheet>
       childAspectRatio: 2.5,
       mainAxisSpacing: 8,
       crossAxisSpacing: 8,
-      children: buttons.map((button) => _buildAdjustmentTile(button)).toList(),
+      children: buttons.map((button) => _buildAdjustmentTile(button, isDarkMode)).toList(),
     );
   }
 
-  Widget _buildAdjustmentTile(_AdjustmentButton button) {
+  Widget _buildAdjustmentTile(_AdjustmentButton button, bool isDarkMode) {
     return Material(
       color: Colors.transparent,
       child: Ink(
@@ -378,6 +430,7 @@ class _TimerSettingsSheetState extends ConsumerState<TimerSettingsSheet>
     required String title,
     required String subtitle,
     required VoidCallback onTap,
+    required bool isDarkMode,
     bool isDestructive = false,
   }) {
     return GestureDetector(
@@ -385,12 +438,19 @@ class _TimerSettingsSheetState extends ConsumerState<TimerSettingsSheet>
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Colors.grey.shade50,
+          color: AppColors.getSurface(isDarkMode),
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: Colors.grey.shade200,
+            color: AppColors.getCardBorder(isDarkMode),
             width: 1,
           ),
+          boxShadow: [
+            BoxShadow(
+              color: isDarkMode ? AppColors.darkShadow : AppColors.softShadow,
+              blurRadius: 2,
+              offset: const Offset(0, 1),
+            ),
+          ],
         ),
         child: Row(
           children: [
@@ -398,14 +458,14 @@ class _TimerSettingsSheetState extends ConsumerState<TimerSettingsSheet>
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
                 color: isDestructive
-                    ? Colors.red.shade50
-                    : Colors.blue.shade50,
+                    ? AppColors.danger.withOpacity(0.1)
+                    : AppColors.primary.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Icon(
                 icon,
                 size: 20,
-                color: isDestructive ? Colors.red : Colors.blue,
+                color: isDestructive ? AppColors.danger : AppColors.primary,
               ),
             ),
             const SizedBox(width: 12),
@@ -418,7 +478,9 @@ class _TimerSettingsSheetState extends ConsumerState<TimerSettingsSheet>
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
-                      color: isDestructive ? Colors.red : Colors.black,
+                      color: isDestructive
+                          ? AppColors.danger
+                          : AppColors.getTextPrimary(isDarkMode),
                     ),
                   ),
                   const SizedBox(height: 2),
@@ -426,7 +488,7 @@ class _TimerSettingsSheetState extends ConsumerState<TimerSettingsSheet>
                     subtitle,
                     style: TextStyle(
                       fontSize: 13,
-                      color: Colors.grey.shade600,
+                      color: AppColors.getTextSecondary(isDarkMode),
                     ),
                   ),
                 ],
@@ -435,7 +497,7 @@ class _TimerSettingsSheetState extends ConsumerState<TimerSettingsSheet>
             Icon(
               CupertinoIcons.chevron_right,
               size: 16,
-              color: Colors.grey.shade400,
+              color: AppColors.getTextMuted(isDarkMode),
             ),
           ],
         ),
@@ -449,7 +511,7 @@ class _TimerSettingsSheetState extends ConsumerState<TimerSettingsSheet>
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('Timer copied: ${duration.toHHMMSS()}'),
-        backgroundColor: Colors.grey.shade800,
+        backgroundColor: AppColors.success,
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),

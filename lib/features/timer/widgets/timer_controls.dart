@@ -5,6 +5,7 @@ import '../models/timer_state.dart';
 import '../providers/timer_notifier.dart';
 import '../dialogs/stop_confirmation_dialog.dart';
 import '../dialogs/restart_confirmation_dialog.dart';
+import '../utils/app_color_scheme.dart';
 
 class TimerControls extends StatelessWidget {
   final TimerData timerData;
@@ -18,44 +19,65 @@ class TimerControls extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDarkMode = theme.brightness == Brightness.dark;
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         // Restart Button (Left)
         _buildSecondaryButton(
+          context,
           icon: CupertinoIcons.restart,
           onTap: () => _showRestartConfirmation(context),
-          color: Colors.grey.shade600,
+          color: AppColors.getTextSecondary(isDarkMode),
+          isDarkMode: isDarkMode,
         ),
 
         const SizedBox(width: 32),
 
         // Primary Play/Pause Button (Center)
-        _buildPrimaryButton(),
+        _buildPrimaryButton(context, isDarkMode),
 
         const SizedBox(width: 32),
 
         // Stop Button (Right)
         _buildSecondaryButton(
+          context,
           icon: CupertinoIcons.stop_fill,
           onTap: () => _showStopConfirmation(context),
-          color: Colors.red.shade500,
+          color: AppColors.danger,
+          isDarkMode: isDarkMode,
         ),
       ],
     );
   }
 
-  Widget _buildPrimaryButton() {
+  Widget _buildPrimaryButton(BuildContext context, bool isDarkMode) {
     final isRunning = timerData.state == TimerState.running;
-    final color = isRunning ? Colors.orange : Colors.blue;
-    final icon = isRunning ? CupertinoIcons.pause_fill : CupertinoIcons.play_fill;
+    final isPaused = timerData.state == TimerState.paused;
+
+    // Use theme-aware colors based on state
+    Color buttonColor;
+    IconData icon;
+
+    if (isRunning) {
+      buttonColor = AppColors.warning;
+      icon = CupertinoIcons.pause_fill;
+    } else if (isPaused) {
+      buttonColor = AppColors.success;
+      icon = CupertinoIcons.play_fill;
+    } else {
+      buttonColor = AppColors.primary;
+      icon = CupertinoIcons.play_fill;
+    }
 
     return Container(
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         boxShadow: [
           BoxShadow(
-            color: color.withOpacity(0.3),
+            color: buttonColor.withOpacity(isDarkMode ? 0.4 : 0.3),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
@@ -67,7 +89,14 @@ class TimerControls extends StatelessWidget {
           width: 80,
           height: 80,
           decoration: BoxDecoration(
-            color: color,
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                buttonColor,
+                buttonColor.withOpacity(0.8),
+              ],
+            ),
             shape: BoxShape.circle,
           ),
           child: Icon(
@@ -80,17 +109,21 @@ class TimerControls extends StatelessWidget {
     );
   }
 
-  Widget _buildSecondaryButton({
-    required IconData icon,
-    required VoidCallback onTap,
-    required Color color,
-  }) {
+  Widget _buildSecondaryButton(
+      BuildContext context, {
+        required IconData icon,
+        required VoidCallback onTap,
+        required Color color,
+        required bool isDarkMode,
+      }) {
     return Container(
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: isDarkMode
+                ? AppColors.darkShadow
+                : AppColors.softShadow,
             blurRadius: 6,
             offset: const Offset(0, 2),
           ),
@@ -102,10 +135,10 @@ class TimerControls extends StatelessWidget {
           width: 56,
           height: 56,
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: AppColors.getSurface(isDarkMode),
             shape: BoxShape.circle,
             border: Border.all(
-              color: color.withOpacity(0.2),
+              color: color.withOpacity(isDarkMode ? 0.4 : 0.2),
               width: 1.5,
             ),
           ),

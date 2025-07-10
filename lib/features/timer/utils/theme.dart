@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -213,6 +214,230 @@ ThemeData defaultTheme() => ThemeData(
       fontSize: 13,
       fontWeight: FontWeight.w400,
       height: 1.4,
+    ),
+  ),
+);
+
+ThemeData darkTheme() => ThemeData(
+  colorScheme: ColorScheme.fromSeed(
+    seedColor: AppColors.primary,
+    brightness: Brightness.dark,
+  ),
+  useMaterial3: true,
+
+  // Dark iOS-style background
+  scaffoldBackgroundColor: const Color(0xFF000000), // Pure black for iOS dark mode
+
+  // Dark iOS-style navigation bar
+  appBarTheme: AppBarTheme(
+    backgroundColor: Colors.transparent,
+    elevation: 0,
+    scrolledUnderElevation: 0,
+    titleTextStyle: const TextStyle(
+      fontSize: 17,
+      fontWeight: FontWeight.w600,
+      color: Colors.white,
+    ),
+    centerTitle: true,
+    systemOverlayStyle: const SystemUiOverlayStyle(
+      statusBarBrightness: Brightness.dark,
+      statusBarIconBrightness: Brightness.light,
+    ),
+  ),
+
+  // Dark cards with subtle elevation
+  cardTheme: CardThemeData(
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(12),
+    ),
+    elevation: 4,
+    shadowColor: Colors.black.withOpacity(0.5),
+    surfaceTintColor: Colors.transparent,
+    color: AppColors.darkCard, // Dark card background
+  ),
+
+  // Dark elevated buttons
+  elevatedButtonTheme: ElevatedButtonThemeData(
+    style: ElevatedButton.styleFrom(
+      backgroundColor: AppColors.primaryLight, // Lighter maroon for dark mode
+      foregroundColor: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      textStyle: const TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.w600,
+      ),
+      elevation: 0,
+      shadowColor: Colors.transparent,
+    ),
+  ),
+
+  // Dark text buttons
+  textButtonTheme: TextButtonThemeData(
+    style: TextButton.styleFrom(
+      foregroundColor: AppColors.primaryLight,
+      textStyle: const TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.w400,
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+    ),
+  ),
+
+  // Dark filled buttons
+  filledButtonTheme: FilledButtonThemeData(
+    style: FilledButton.styleFrom(
+      backgroundColor: AppColors.neutral700,
+      foregroundColor: AppColors.primaryLight,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      textStyle: const TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.w600,
+      ),
+      elevation: 0,
+    ),
+  ),
+
+  // Dark input decoration
+  inputDecorationTheme: InputDecorationTheme(
+    filled: true,
+    fillColor: AppColors.neutral800,
+    border: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(10),
+      borderSide: BorderSide(color: AppColors.neutral600),
+    ),
+    enabledBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(10),
+      borderSide: BorderSide(color: AppColors.neutral600),
+    ),
+    focusedBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(10),
+      borderSide: BorderSide(color: AppColors.primaryLight, width: 2),
+    ),
+    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+  ),
+
+  // Dark dialogs
+  dialogTheme: DialogThemeData(
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(14),
+    ),
+    elevation: 10,
+    shadowColor: Colors.black.withOpacity(0.6),
+    backgroundColor: AppColors.neutral800,
+    titleTextStyle: const TextStyle(
+      fontSize: 17,
+      fontWeight: FontWeight.w600,
+      color: Colors.white,
+    ),
+    contentTextStyle: const TextStyle(
+      fontSize: 13,
+      fontWeight: FontWeight.w400,
+      color: Colors.white70,
+    ),
+  ),
+
+  // Dark bottom sheets
+  bottomSheetTheme: BottomSheetThemeData(
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+    ),
+    backgroundColor: AppColors.neutral800,
+    elevation: 10,
+  ),
+
+  // Dark list tiles
+  listTileTheme: ListTileThemeData(
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(10),
+    ),
+    tileColor: AppColors.neutral800,
+    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+  ),
+
+  // Dark dividers
+  dividerTheme: DividerThemeData(
+    color: AppColors.neutral600,
+    thickness: 0.5,
+    space: 1,
+  ),
+
+  // Dark switches
+  switchTheme: SwitchThemeData(
+    thumbColor: MaterialStateProperty.resolveWith((states) {
+      if (states.contains(MaterialState.selected)) {
+        return Colors.white;
+      }
+      return AppColors.neutral400;
+    }),
+    trackColor: MaterialStateProperty.resolveWith((states) {
+      if (states.contains(MaterialState.selected)) {
+        return AppColors.primaryLight;
+      }
+      return AppColors.neutral700;
+    }),
+  ),
+
+  // Dark typography
+  textTheme: const TextTheme(
+    displayLarge: TextStyle(
+      fontSize: 34,
+      fontWeight: FontWeight.w700,
+      height: 1.2,
+      color: Colors.white,
+    ),
+    displayMedium: TextStyle(
+      fontSize: 28,
+      fontWeight: FontWeight.w700,
+      height: 1.2,
+      color: Colors.white,
+    ),
+    displaySmall: TextStyle(
+      fontSize: 22,
+      fontWeight: FontWeight.w600,
+      height: 1.3,
+      color: Colors.white,
+    ),
+    headlineLarge: TextStyle(
+      fontSize: 20,
+      fontWeight: FontWeight.w600,
+      height: 1.3,
+      color: Colors.white,
+    ),
+    headlineMedium: TextStyle(
+      fontSize: 17,
+      fontWeight: FontWeight.w600,
+      height: 1.3,
+      color: Colors.white,
+    ),
+    headlineSmall: TextStyle(
+      fontSize: 15,
+      fontWeight: FontWeight.w600,
+      height: 1.3,
+      color: Colors.white,
+    ),
+    bodyLarge: TextStyle(
+      fontSize: 17,
+      fontWeight: FontWeight.w400,
+      height: 1.4,
+      color: Colors.white,
+    ),
+    bodyMedium: TextStyle(
+      fontSize: 15,
+      fontWeight: FontWeight.w400,
+      height: 1.4,
+      color: Colors.white70,
+    ),
+    bodySmall: TextStyle(
+      fontSize: 13,
+      fontWeight: FontWeight.w400,
+      height: 1.4,
+      color: Colors.white60,
     ),
   ),
 );
