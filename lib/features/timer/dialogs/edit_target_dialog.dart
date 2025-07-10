@@ -126,7 +126,7 @@ class EditTargetDialog {
             onPressed: () => Navigator.pop(context),
             child: const Text('Cancel'),
           ),
-          ElevatedButton(
+          OutlinedButton(
             onPressed: () {
               final minutes = int.tryParse(minutesController.text) ?? 0;
               final seconds = int.tryParse(secondsController.text) ?? 0;
@@ -134,6 +134,10 @@ class EditTargetDialog {
               targetTimeNotifier.updateTargetTime(newTarget);
               Navigator.pop(context);
             },
+            style: TextButton.styleFrom(
+              foregroundColor: Colors.red,
+              //textStyle: TextStyle(fontWeight: FontWeight.bold)
+            ),
             child: const Text('Update Target'),
           ),
         ],
@@ -220,10 +224,10 @@ class EditTargetDialog {
         },
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.primary.withOpacity(0.1),
-          foregroundColor: AppColors.primary,
+          foregroundColor: AppColors.neutral700,
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(18),
+            borderRadius: BorderRadius.circular(16),
           ),
           elevation: 0,
         ),

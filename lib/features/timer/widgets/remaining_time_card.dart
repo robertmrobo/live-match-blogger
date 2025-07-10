@@ -45,7 +45,7 @@ class RemainingTimeCard extends StatelessWidget {
                 Icon(
                   isOvertime ? Icons.timer_off : Icons.timer,
                   size: 20,
-                  color: TimerColors.getRemainingColor(elapsed, target),
+                  color: Colors.grey.shade700,
                 ),
                 const SizedBox(width: 8),
                 Text(
