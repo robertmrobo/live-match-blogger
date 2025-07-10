@@ -38,7 +38,6 @@ class _TimerPageState extends ConsumerState<TimerPage> {
     final targetTimeNotifier = ref.read(targetTimeProvider.notifier);
 
     return Scaffold(
-      // iOS-style navigation bar
       appBar: AppBar(
         title: const Text(
           'Timer',
@@ -52,7 +51,6 @@ class _TimerPageState extends ConsumerState<TimerPage> {
         elevation: 0,
         scrolledUnderElevation: 0,
         actions: [
-          // iOS-style settings button
           IconButton(
             onPressed: _showSettingsSheet,
             icon: const Icon(
