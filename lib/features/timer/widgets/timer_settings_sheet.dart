@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
@@ -51,6 +50,9 @@ class _TimerSettingsSheetState extends ConsumerState<TimerSettingsSheet>
 
     return SafeArea(
       child: Container(
+        constraints: BoxConstraints(
+          maxHeight: MediaQuery.of(context).size.height * 0.9, // Limit height to 90% of screen
+        ),
         decoration: BoxDecoration(
           color: AppColors.getCardBackground(isDarkMode),
           borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
@@ -69,99 +71,103 @@ class _TimerSettingsSheetState extends ConsumerState<TimerSettingsSheet>
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const SizedBox(height: 24),
-            // iOS-style handle
-            Container(
-              width: 40,
-              height: 4,
-              margin: const EdgeInsets.only(top: 12),
-              decoration: BoxDecoration(
-                color: AppColors.getTextMuted(isDarkMode),
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-
-            // Header
-            Padding(
-              padding: const EdgeInsets.all(20),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Timer Settings',
-                    style: theme.textTheme.titleLarge?.copyWith(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.getTextPrimary(isDarkMode),
-                    ),
+            // Fixed header section
+            Column(
+              children: [
+                const SizedBox(height: 24),
+                // iOS-style handle
+                Container(
+                  width: 40,
+                  height: 4,
+                  margin: const EdgeInsets.only(top: 12),
+                  decoration: BoxDecoration(
+                    color: AppColors.getTextMuted(isDarkMode),
+                    borderRadius: BorderRadius.circular(2),
                   ),
-                  GestureDetector(
-                    onTap: () => Navigator.pop(context),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                      decoration: BoxDecoration(
-                        color: AppColors.primary.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Text(
-                        'Done',
-                        style: theme.textTheme.labelLarge?.copyWith(
-                          color: AppColors.danger,
-                          fontSize: 17,
+                ),
+
+                // Header
+                Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Timer Settings',
+                        style: theme.textTheme.titleLarge?.copyWith(
+                          fontSize: 20,
                           fontWeight: FontWeight.w600,
+                          color: AppColors.getTextPrimary(isDarkMode),
                         ),
                       ),
-                    ),
+                      GestureDetector(
+                        onTap: () => Navigator.pop(context),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                          decoration: BoxDecoration(
+                            color: AppColors.primary.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text(
+                            'Done',
+                            style: theme.textTheme.labelLarge?.copyWith(
+                              color: AppColors.danger,
+                              fontSize: 17,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+
+                _buildCurrentValuesDisplay(timerData.duration, targetTime, isDarkMode),
+
+                // iOS-style segmented control
+                Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 20),
+                  child: CupertinoSegmentedControl<SettingsTab>(
+                    selectedColor: AppColors.primary,
+                    unselectedColor: AppColors.getSurface(isDarkMode),
+                    borderColor: AppColors.getCardBorder(isDarkMode),
+                    pressedColor: AppColors.primary.withOpacity(0.2),
+                    children: {
+                      SettingsTab.adjustments: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                        child: Text(
+                          'Quick Adjust',
+                          style: TextStyle(
+                            color: _selectedTab == SettingsTab.adjustments
+                                ? Colors.white
+                                : AppColors.getTextPrimary(isDarkMode),
+                          ),
+                        ),
+                      ),
+                      SettingsTab.actions: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                        child: Text(
+                          'Actions',
+                          style: TextStyle(
+                            color: _selectedTab == SettingsTab.actions
+                                ? Colors.white
+                                : AppColors.getTextPrimary(isDarkMode),
+                          ),
+                        ),
+                      ),
+                    },
+                    groupValue: _selectedTab,
+                    onValueChanged: (value) {
+                      setState(() => _selectedTab = value);
+                    },
+                  ),
+                ),
+              ],
             ),
 
-            _buildCurrentValuesDisplay(timerData.duration, targetTime, isDarkMode),
-
-            // iOS-style segmented control
-            Container(
-              margin: const EdgeInsets.symmetric(horizontal: 20),
-              child: CupertinoSegmentedControl<SettingsTab>(
-                selectedColor: AppColors.primary,
-                unselectedColor: AppColors.getSurface(isDarkMode),
-                borderColor: AppColors.getCardBorder(isDarkMode),
-                pressedColor: AppColors.primary.withOpacity(0.2),
-                children: {
-                  SettingsTab.adjustments: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
-                    child: Text(
-                      'Quick Adjust',
-                      style: TextStyle(
-                        color: _selectedTab == SettingsTab.adjustments
-                            ? Colors.white
-                            : AppColors.getTextPrimary(isDarkMode),
-                      ),
-                    ),
-                  ),
-                  SettingsTab.actions: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
-                    child: Text(
-                      'Actions',
-                      style: TextStyle(
-                        color: _selectedTab == SettingsTab.actions
-                            ? Colors.white
-                            : AppColors.getTextPrimary(isDarkMode),
-                      ),
-                    ),
-                  ),
-                },
-                groupValue: _selectedTab,
-                onValueChanged: (value) {
-                  setState(() => _selectedTab = value);
-                },
-              ),
-            ),
-
-            // Content based on selected tab
-            Flexible(
-              child: Container(
-                width: double.infinity,
+            // Scrollable content section
+            Expanded(
+              child: SingleChildScrollView(
                 padding: const EdgeInsets.all(20),
                 child: _selectedTab == SettingsTab.adjustments
                     ? _buildAdjustmentsTab(timerNotifier, targetTimeNotifier, isDarkMode)
