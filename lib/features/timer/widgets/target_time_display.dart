@@ -16,7 +16,7 @@ class TargetTimeDisplay extends ConsumerWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
-          'Target: ${targetTime.toMMSS()}',
+          'Target: ${targetTime.toHHMMSS()}',
           style: Theme.of(context).textTheme.bodyLarge?.copyWith(
             fontSize: 18,
             fontWeight: FontWeight.w600,

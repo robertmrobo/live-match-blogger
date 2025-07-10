@@ -37,7 +37,7 @@ class _RestartConfirmationDialog extends StatelessWidget {
       content: Padding(
         padding: const EdgeInsets.only(top: 8.0),
         child: Text(
-          'This will reset your current timer (${timerData.duration.toMMSS()}) back to 00:00 and start immediately.',
+          'This will reset your current timer (${timerData.duration.toHHMMSS()}) back to 00:00 and start immediately.',
           style: const TextStyle(fontSize: 14),
         ),
       ),

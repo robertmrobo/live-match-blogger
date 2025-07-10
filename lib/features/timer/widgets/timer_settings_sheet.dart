@@ -165,7 +165,7 @@ class _TimerSettingsSheetState extends ConsumerState<TimerSettingsSheet>
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  currentTimer.toMMSS(),
+                  currentTimer.toHHMMSS(),
                   style: const TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.w700,
@@ -197,7 +197,7 @@ class _TimerSettingsSheetState extends ConsumerState<TimerSettingsSheet>
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  targetTime.toMMSS(),
+                  targetTime.toHHMMSS(),
                   style: const TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.w700,
@@ -444,11 +444,11 @@ class _TimerSettingsSheetState extends ConsumerState<TimerSettingsSheet>
   }
 
   void _copyToClipboard(Duration duration) {
-    Clipboard.setData(ClipboardData(text: duration.toMMSS()));
+    Clipboard.setData(ClipboardData(text: duration.toHHMMSS()));
     Navigator.pop(context);
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('Timer copied: ${duration.toMMSS()}'),
+        content: Text('Timer copied: ${duration.toHHMMSS()}'),
         backgroundColor: Colors.grey.shade800,
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(
