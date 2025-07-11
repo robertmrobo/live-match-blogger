@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 
 import '../providers/target_time_notifier.dart';
 import '../providers/timer_notifier.dart';
@@ -20,6 +20,12 @@ class TimerPage extends ConsumerStatefulWidget {
 }
 
 class _TimerPageState extends ConsumerState<TimerPage> {
+  @override
+  void initState(){
+    FlutterNativeSplash.remove();
+    super.initState();
+  }
+
   void _showSettingsSheet() {
     showModalBottomSheet(
       context: context,
