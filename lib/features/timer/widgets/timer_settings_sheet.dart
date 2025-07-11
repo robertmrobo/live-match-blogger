@@ -323,6 +323,8 @@ class _TimerSettingsSheetState extends ConsumerState<TimerSettingsSheet>
             color: AppColors.danger,
           ),
         ], isDarkMode),
+        const SizedBox(height: 48),
+        const Text("v0.0.1")
       ],
     );
   }
